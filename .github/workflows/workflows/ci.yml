@@ -54,9 +54,14 @@ jobs:
           path: dist/
 
   notify:
-    name: Send Notification
+    name: Deploy Notification
     runs-on: ubuntu-latest
     needs: [build]
     if: github.ref == 'refs/heads/main'
+    environment: production # <--- Links to the production environment gate
     steps:
-      - run: echo "Build succeeded on main!"
+      - run: echo "Deploying ${{ env.APP_NAME }}..."
+      - name: Use secret
+        run: echo "Token length is ${#DEPLOY_TOKEN} characters"
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
